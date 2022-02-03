@@ -9,3 +9,6 @@ Primarly use [Teachable Machine](https://teachablemachine.withgoogle.com/) to tr
 - [ ] Make noise when filler word is said
 
 - [ ] Use web bluetooth to trigger anti-incentive
+
+### Inspiration resources
+https://www.awwwards.com/sites/word-counter-1
