@@ -88,12 +88,18 @@
                 app.cool_probability = cool_score
                 app.so_probability = so_score
 
+                let trigger_word_said = false
 
                 if(cool_score > COUNT_THRESHOLD){
                     app.cool_count++
+                    trigger_word_said = true
                 }else if (so_score > COUNT_THRESHOLD){
                     app.so_count++
+                    trigger_word_said = true
                 } 
+
+                if (trigger_word_said)
+                    new Audio('buzz.mp3').play()
 
 
                 // // render the probability scores per class
