@@ -22,10 +22,12 @@
         body {
             font-family: 'Nunito', sans-serif;
             text-align: center;
+            zoom: 200%;
         }
 
         h1 {
             font-family: 'Sedgwick Ave', cursive;
+            margin: 0;
         }
 
         h1>span {
@@ -74,11 +76,16 @@
             border-radius: 5px;
         }
 
-        button:hover{
+        button:hover {
             cursor: pointer;
             background-color: white;
             color: #319add;
             border: #319add solid 2px;
+        }
+
+        #intro {
+            margin: 10px auto;
+            width: 378px;
         }
     </style>
 
@@ -90,6 +97,15 @@
     <div id="app">
 
         <h1>Ah-um-like-so-cool <span>detector</span></h1>
+
+        <p id="intro">Real-time voice recognition app to help speakers reduce their use of "filler words".
+            <br><br>
+            <a href="https://twitter.com/ZackAkil" target="_blank">@ZackAkil</a> | 
+            <a href="https://github.com/ZackAkil/Ah-um-like-so-cool-detector" target="_blank">Github repo</a>
+        </p>
+        <br>
+
+
         <button type="button" onclick="init()">Start</button>
         <button type="button" onclick="stop()">Stop</button>
         <button type="button" onclick="reset()">Reset</button>
