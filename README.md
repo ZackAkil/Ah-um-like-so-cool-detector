@@ -3,11 +3,13 @@ Real-time voice recognition app to help speakers reduce their use of "filler wor
 
 Primarly use [Teachable Machine](https://teachablemachine.withgoogle.com/) to train Audio recognition model. 
 
+![UI](screenshot.png)
+
 ### Features
 - [x] Detect filler words
 - [x] Count filler words
 - [x] Make noise when filler word is said
-- [ ] export stats
+- [x] export stats
 
 - [ ] Use web bluetooth to trigger anti-incentive
 
