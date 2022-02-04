@@ -12,6 +12,3 @@ Primarly use [Teachable Machine](https://teachablemachine.withgoogle.com/) to tr
 - [x] export stats
 
 - [ ] Use web bluetooth to trigger anti-incentive
-
-### Inspiration resources
-https://www.awwwards.com/sites/word-counter-1
