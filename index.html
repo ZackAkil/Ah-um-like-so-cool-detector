@@ -83,22 +83,12 @@
         <h4>{{time}}</h4>
 
         <div id="filler-words">
-            <div class="word"
-                v-bind:style="{ width: (cool_count * 10) + 50 + 'px', height: (cool_count * 10) + 50 + 'px' }">
+            <div class="word" v-for="word in trigger_words"
+                v-bind:style="{ width: (counts[word] * 8) + 60 + 'px', height: (counts[word] * 8) + 60 + 'px' }">
                 <div>
                     <div class="word_contents">
-                        <p>Cool</p>
-                        <p>{{cool_count}}</p>
-                    </div>
-                </div>
-
-            </div>
-            <div class="word"
-                v-bind:style="{ width: (so_count * 10) + 50 + 'px', height:  (so_count * 10) + 50 + 'px' }">
-                <div>
-                    <div class="word_contents">
-                        <p>So</p>
-                        <p>{{so_count}}</p>
+                        <p>{{word}}</p>
+                        <p>{{counts[word]}}</p>
                     </div>
                 </div>
             </div>
@@ -112,24 +102,27 @@
 
     <script type="text/javascript">
 
-
         const COUNT_THRESHOLD = 0.5
-
-        var record
-        init_record()
-
 
         var app = new Vue({
             el: '#app',
             data: {
                 message: 'Hello Vue!',
-                cool_probability: 0,
-                so_probability: 0,
-                cool_count: 0,
-                so_count: 0,
+                labels_list: ["Background Noise", "ah-um", "cool", "normal speaking", "so"],
+                trigger_words: ["ah-um", "cool", "so"],
+                counts: {},
                 time: "00:00:00"
             }
         })
+
+        var trigger_word_index_map = {}
+        app.trigger_words.forEach(word => {
+            trigger_word_index_map[word] = app.labels_list.indexOf(word)
+            app.counts[word] = 0
+        })
+
+        var record
+        init_record()
 
 
         const timer = new Timer()
@@ -173,30 +166,36 @@
             recognizer = await createModel();
 
             recognizer.listen(result => {
+
                 const scores = result.scores; // probability of prediction for each class
 
-                let cool_score = result.scores[1].toFixed(2)
-                let so_score = result.scores[3].toFixed(2)
-
-                app.cool_probability = cool_score
-                app.so_probability = so_score
+                // let cool_score = result.scores[1].toFixed(2)
+                // let so_score = result.scores[3].toFixed(2)
 
                 let trigger_word_said = false
 
-                if (cool_score > COUNT_THRESHOLD) {
-                    app.cool_count++
-                    trigger_word_said = true
-                    record.push([timer.getTimeValues().toString(), 0, 1])
-                } else if (so_score > COUNT_THRESHOLD) {
-                    app.so_count++
-                    trigger_word_said = true
-                    record.push([timer.getTimeValues().toString(), 1, 0])
-                } else {
-                    record.push([timer.getTimeValues().toString(), 0, 0])
-                }
 
-                if (trigger_word_said)
-                    new Audio('buzz.mp3').play()
+                app.trigger_words.forEach(word => {
+
+                    let word_index = trigger_word_index_map[word]
+
+                    if (result.scores[word_index] > COUNT_THRESHOLD) {
+                        app.counts[word]++
+                        trigger_word_said = true
+
+                        // create record row
+                        let row = new Array(app.trigger_words.length).fill(0)
+                        row[app.trigger_words.indexOf(word)] = 1
+
+                        record.push([timer.getTimeValues().toString(), ...row])
+                        new Audio('buzz.mp3').play()
+                    }
+                })
+
+                if (!trigger_word_said) {
+                    let row = new Array(app.trigger_words.length).fill(0)
+                    record.push([timer.getTimeValues().toString(), ...row])
+                }
 
             }, {
                 includeSpectrogram: true, // in case listen should return result.spectrogram
@@ -231,14 +230,19 @@
 
             init_record()
             timer.stop()
-            app.cool_count = 0
-            app.so_count = 0
+
+            // reset counts
+            app.trigger_words.forEach(word => {
+                app.counts[word] = 0
+            })
+
             app.time = "00:00:00"
-            recognizer.stopListening()
+            if (recognizer.streaming)
+                recognizer.stopListening()
         }
 
-        function init_record(){
-            record = [['Time', 'So', 'Cool']]
+        function init_record() {
+            record = [['Time', ...app.trigger_words]]
         }
 
 
