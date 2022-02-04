@@ -1,4 +1,4 @@
-# Ah-um-like-so-cool-detector ([try here](https://zackakil.github.io/Ah-um-like-so-cool-detector/))
+# Ah-um-like-so-cool detector ([try here](https://zackakil.github.io/Ah-um-like-so-cool-detector/))
 Real-time voice recognition app to help speakers reduce their use of "filler words".
 
 Primarly use [Teachable Machine](https://teachablemachine.withgoogle.com/) to train Audio recognition model. 
