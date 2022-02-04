@@ -3,6 +3,9 @@ Real-time voice recognition app to help speakers reduce their use of "filler wor
 
 Primarly use [Teachable Machine](https://teachablemachine.withgoogle.com/) to train Audio recognition model. 
 
+## BIAS DECLARATION
+The model used in this demo was trained on a muddled Northern Irish male accent, it might help to try your best impersonation ¯\\_\_(ツ)_\_/¯ 
+
 ![UI](screenshot.png)
 
 ### Features
