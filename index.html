@@ -9,7 +9,7 @@
     // https://github.com/tensorflow/tfjs-models/tree/master/speech-commands
 
     // the link to your model provided by Teachable Machine export panel
-    const URL = "http://127.0.0.1:8080/tm-my-audio-model/";
+    const URL =  document.location.origin + "/tm-my-audio-model/";
 
     async function createModel() {
         const checkpointURL = URL + "model.json"; // model topology
