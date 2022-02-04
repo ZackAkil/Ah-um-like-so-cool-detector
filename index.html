@@ -78,6 +78,7 @@
         <h1>Ah-um-like-so-cool <span>detector</span></h1>
         <button type="button" onclick="init()">Start</button>
         <button type="button" onclick="stop()">Stop</button>
+        <button type="button" onclick="reset()">Reset</button>
 
         <h4>{{time}}</h4>
 
@@ -103,6 +104,7 @@
             </div>
         </div>
 
+        <br>
 
         <button type="button" onclick="export_stats()">Export Stats</button>
 
@@ -112,7 +114,9 @@
 
 
         const COUNT_THRESHOLD = 0.5
-        var record = [['Time', 'So', 'Cool']]
+
+        var record
+        init_record()
 
 
         var app = new Vue({
@@ -123,7 +127,7 @@
                 so_probability: 0,
                 cool_count: 0,
                 so_count: 0,
-                time: ""
+                time: "00:00:00"
             }
         })
 
@@ -187,7 +191,7 @@
                     app.so_count++
                     trigger_word_said = true
                     record.push([timer.getTimeValues().toString(), 1, 0])
-                }else{
+                } else {
                     record.push([timer.getTimeValues().toString(), 0, 0])
                 }
 
@@ -208,15 +212,8 @@
         }
 
         async function export_stats() {
-            // const rows = [
-            //     ["So", "Cool", "Time"],
-            //     [app.so_count, app.cool_count, timer.getTimeValues().toString()]
-            // ];
-
-
 
             const rows = record
-
 
             let csvContent = "data:text/csv;charset=utf-8,";
 
@@ -227,6 +224,21 @@
 
             var encodedUri = encodeURI(csvContent);
             window.open(encodedUri);
+        }
+
+
+        async function reset() {
+
+            init_record()
+            timer.stop()
+            app.cool_count = 0
+            app.so_count = 0
+            app.time = "00:00:00"
+            recognizer.stopListening()
+        }
+
+        function init_record(){
+            record = [['Time', 'So', 'Cool']]
         }
 
 
