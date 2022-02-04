@@ -6,12 +6,16 @@
     <script
         src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/easytimer@1.1.1/dist/easytimer.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400&family=Sedgwick+Ave&display=swap"
         rel="stylesheet">
+
+
 
 
     <style>
@@ -39,7 +43,7 @@
             width: 60px;
             border-radius: 100%;
             display: inline-block;
-
+            margin:5px;
 
         }
 
@@ -51,9 +55,18 @@
             width:100%;
         }
 
+        
+
         div>p {
             margin: 0;
+
         }
+
+        .word_contents{
+            font-size: 100%;
+
+        }
+
     </style>
 
 </head>
@@ -65,12 +78,15 @@
 
         <h1>Ah-um-like-so-cool <span>detector</span></h1>
         <button type="button" onclick="init()">Start</button>
+        <button type="button" onclick="stop()">Stop</button>
+
+        <h4>{{time}}</h4>
 
         <div id="filler-words">
             <div class="word"
                 v-bind:style="{ width: (cool_count * 10) + 50 + 'px', height: (cool_count * 10) + 50 + 'px' }">
                 <div>
-                    <div>
+                   <div class="word_contents">
                         <p>Cool</p>
                         <p>{{cool_count}}</p>
                     </div>
@@ -80,8 +96,8 @@
             <div class="word"
                 v-bind:style="{ width: (so_count * 10) + 50 + 'px', height:  (so_count * 10) + 50 + 'px' }">
                 <div>
-                    <div>
-                        <p>So</p>
+                    <div class="word_contents">
+                        <p >So</p>
                         <p>{{so_count}}</p>
                     </div>
                 </div>
@@ -104,8 +120,17 @@
                 so_probability: 0,
                 cool_count: 0,
                 so_count: 0,
+                time: ""
             }
         })
+
+
+        const timer = new Timer()
+
+
+        timer.addEventListener('secondsUpdated', function (e) {
+            app.time = timer.getTimeValues().toString()
+        });
 
 
 
@@ -131,8 +156,14 @@
             return recognizer;
         }
 
+        var recognizer
+
+
         async function init() {
-            const recognizer = await createModel();
+
+            timer.start()
+
+            recognizer = await createModel();
             // const classLabels = recognizer.wordLabels(); // get class labels
             // const labelContainer = document.getElementById("label-container");
             // for (let i = 0; i < classLabels.length; i++) {
@@ -181,6 +212,13 @@
             // Stop the recognition in 5 seconds.
             // setTimeout(() => recognizer.stopListening(), 5000);
         }
+
+        async function stop(){
+            recognizer.stopListening()
+            timer.pause()
+        }
+
+
     </script>
 </body>
 
