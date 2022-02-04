@@ -31,16 +31,27 @@
             font-size: 1.1em;
         }
 
-        .word{
-            display: inline-block;
+        .word {
+            vertical-align: middle;
             background-color: rgb(237, 237, 237);
             border: solid black 5px;
-            height:60px;
-            width:60px;
+            height: 60px;
+            width: 60px;
             border-radius: 100%;
+            display: inline-block;
+
+
         }
 
-        .word > p {
+        .word>div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height:100%;
+            width:100%;
+        }
+
+        div>p {
             margin: 0;
         }
     </style>
@@ -56,13 +67,24 @@
         <button type="button" onclick="init()">Start</button>
 
         <div id="filler-words">
-            <div class="word">
-                <p>Cool</p>
-                <p>{{cool_count}}</p>
+            <div class="word"
+                v-bind:style="{ width: (cool_count * 10) + 50 + 'px', height: (cool_count * 10) + 50 + 'px' }">
+                <div>
+                    <div>
+                        <p>Cool</p>
+                        <p>{{cool_count}}</p>
+                    </div>
+                </div>
+
             </div>
-            <div class="word">
-                <p>So</p>
-                <p>{{so_count}}</p>
+            <div class="word"
+                v-bind:style="{ width: (so_count * 10) + 50 + 'px', height:  (so_count * 10) + 50 + 'px' }">
+                <div>
+                    <div>
+                        <p>So</p>
+                        <p>{{so_count}}</p>
+                    </div>
+                </div>
             </div>
         </div>
 
