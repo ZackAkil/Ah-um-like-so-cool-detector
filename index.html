@@ -1,7 +1,14 @@
 <html>
 
 <head>
-    <title>Ah um like so cool detector</title>
+    <title>Ah-um-like-so-cool detector</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real-time voice recognition app to help speakers reduce their use of filler words.">
+    <meta name="author" content="Zack Akil">
+    <meta name="keywords"
+        content="Real-time voice recognition app to help speakers reduce their use of filler words machine-learning vue tensorflow voice-recognition tensor techable-machine">
+
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.min.js"></script>
@@ -87,6 +94,10 @@
             margin: 10px auto;
             max-width: 378px;
         }
+
+        #bias{
+            font-size: 0.5em;
+        }
     </style>
 
 </head>
@@ -96,7 +107,7 @@
 
     <div id="app">
 
-        <h1>Ah-um-like-so-cool <span>detector</span></h1>
+        <h1>Ah-um-like-so-cool <span>detector*</span></h1>
 
         <p id="intro">Real-time voice recognition app to help speakers reduce their use of "filler words".
             <br><br>
@@ -127,6 +138,10 @@
         <br><br>
 
         <button type="button" onclick="export_stats()">Export Stats</button>
+
+        <br><br><br><br>
+
+        <p id="bias">*The model used in this demo was trained on a muddled Northern Irish male accent. It might help to try your best impersonation.</p>
 
     </div>
 
