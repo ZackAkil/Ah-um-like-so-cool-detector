@@ -1,58 +1,118 @@
-<div>Teachable Machine Audio Model</div>
-<button type="button" onclick="init()">Start</button>
-<div id="label-container"></div>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.min.js"></script>
+<html>
 
-<script type="text/javascript">
-    // more documentation available at
-    // https://github.com/tensorflow/tfjs-models/tree/master/speech-commands
+<head>
+    <title>Ah um like so cool detector</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.min.js"></script>
 
-    // the link to your model provided by Teachable Machine export panel
-    const URL =  document.location.href + "tm-my-audio-model/";
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 
-    async function createModel() {
-        const checkpointURL = URL + "model.json"; // model topology
-        const metadataURL = URL + "metadata.json"; // model metadata
 
-        const recognizer = speechCommands.create(
-            "BROWSER_FFT", // fourier transform type, not useful to change
-            undefined, // speech commands vocabulary feature, not useful for your models
-            checkpointURL,
-            metadataURL);
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+</head>
 
-        // check that model and metadata are loaded via HTTPS requests.
-        await recognizer.ensureModelLoaded();
 
-        return recognizer;
-    }
+<body>
 
-    async function init() {
-        const recognizer = await createModel();
-        const classLabels = recognizer.wordLabels(); // get class labels
-        const labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < classLabels.length; i++) {
-            labelContainer.appendChild(document.createElement("div"));
+    <div id="app">
+
+        <div>Ah um like so cool detector</div>
+        <button type="button" onclick="init()">Start</button>
+
+        <p>Cool ({{cool_count}}) : {{cool_probability}}</p>
+        <p>So ({{so_count}}): {{so_probability}}</p>
+
+    </div>
+
+    <script type="text/javascript">
+
+
+        const COUNT_THRESHOLD = 0.5
+
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello Vue!',
+                cool_probability: 0,
+                so_probability: 0,
+                cool_count: 0,
+                so_count: 0,
+            }
+        })
+
+
+
+        // more documentation available at
+        // https://github.com/tensorflow/tfjs-models/tree/master/speech-commands
+
+        // the link to your model provided by Teachable Machine export panel
+        const URL = document.location.href + "tm-my-audio-model/";
+
+        async function createModel() {
+            const checkpointURL = URL + "model.json"; // model topology
+            const metadataURL = URL + "metadata.json"; // model metadata
+
+            const recognizer = speechCommands.create(
+                "BROWSER_FFT", // fourier transform type, not useful to change
+                undefined, // speech commands vocabulary feature, not useful for your models
+                checkpointURL,
+                metadataURL);
+
+            // check that model and metadata are loaded via HTTPS requests.
+            await recognizer.ensureModelLoaded();
+
+            return recognizer;
         }
 
-        // listen() takes two arguments:
-        // 1. A callback function that is invoked anytime a word is recognized.
-        // 2. A configuration object with adjustable fields
-        recognizer.listen(result => {
-            const scores = result.scores; // probability of prediction for each class
-            // render the probability scores per class
-            for (let i = 0; i < classLabels.length; i++) {
-                const classPrediction = classLabels[i] + ": " + result.scores[i].toFixed(2);
-                labelContainer.childNodes[i].innerHTML = classPrediction;
-            }
-        }, {
-            includeSpectrogram: true, // in case listen should return result.spectrogram
-            probabilityThreshold: 0.75,
-            invokeCallbackOnNoiseAndUnknown: true,
-            overlapFactor: 0.50 // probably want between 0.5 and 0.75. More info in README
-        });
+        async function init() {
+            const recognizer = await createModel();
+            // const classLabels = recognizer.wordLabels(); // get class labels
+            // const labelContainer = document.getElementById("label-container");
+            // for (let i = 0; i < classLabels.length; i++) {
+            //     labelContainer.appendChild(document.createElement("div"));
+            // }
 
-        // Stop the recognition in 5 seconds.
-        // setTimeout(() => recognizer.stopListening(), 5000);
-    }
-</script>
+            // listen() takes two arguments:
+            // 1. A callback function that is invoked anytime a word is recognized.
+            // 2. A configuration object with adjustable fields
+            recognizer.listen(result => {
+                const scores = result.scores; // probability of prediction for each class
+
+                let cool_score = result.scores[1].toFixed(2)
+                let so_score = result.scores[3].toFixed(2)
+
+                app.cool_probability = cool_score
+                app.so_probability = so_score
+
+
+                if(cool_score > COUNT_THRESHOLD){
+                    app.cool_count++
+                }else if (so_score > COUNT_THRESHOLD){
+                    app.so_count++
+                } 
+
+
+                // // render the probability scores per class
+                // for (let i = 0; i < classLabels.length; i++) {
+
+                //     const classPrediction = classLabels[i] + ": " + result.scores[i].toFixed(2);
+                //     labelContainer.childNodes[i].innerHTML = classPrediction;
+                // }
+            }, {
+                includeSpectrogram: true, // in case listen should return result.spectrogram
+                probabilityThreshold: 0.75,
+                invokeCallbackOnNoiseAndUnknown: true,
+                overlapFactor: 0.50 // probably want between 0.5 and 0.75. More info in README
+            });
+
+            // Stop the recognition in 5 seconds.
+            // setTimeout(() => recognizer.stopListening(), 5000);
+        }
+    </script>
+</body>
+
+</html>
